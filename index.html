@@ -34,7 +34,7 @@
   .tab{background:none;border:none;color:var(--muted);padding:10px 12px;font-size:13px;font-weight:600;cursor:pointer;border-bottom:2px solid transparent;display:flex;align-items:center;gap:6px;}
   .tab.active{color:var(--accent);border-bottom-color:var(--accent);}
   .badge{background:var(--danger);color:#fff;border-radius:10px;font-size:10px;padding:1px 6px;font-family:'Prompt',sans-serif;}
-  .content{padding-top:20px;zoom:1.2;}
+  .content{padding-top:20px;}
   .stats{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:24px;}
   .stat{background:var(--panel);border:1px solid var(--border);border-radius:10px;padding:14px;}
   .stat .lbl{color:var(--muted);font-size:11px;}
@@ -42,7 +42,7 @@
   .section-title{font-family:'Prompt',sans-serif;font-size:14px;font-weight:600;margin-bottom:12px;display:flex;align-items:center;gap:6px;}
   .card-list{display:flex;flex-direction:column;gap:8px;}
   .low-card{display:flex;align-items:center;gap:12px;padding:12px;background:var(--dangerDim);border:1px solid #F0473E44;border-radius:10px;}
-  .thumb{width:40px;height:40px;border-radius:8px;object-fit:cover;flex-shrink:0;border:1px solid var(--border);background:var(--panelAlt);}
+  .thumb{width:48px;height:48px;border-radius:8px;object-fit:cover;flex-shrink:0;border:1px solid var(--border);background:var(--panelAlt);}
   .thumb-ph{width:40px;height:40px;border-radius:8px;background:var(--panelAlt);display:flex;align-items:center;justify-content:center;color:var(--mutedFaint);flex-shrink:0;font-size:16px;}
   .grow{flex:1;min-width:0;}
   .truncate{white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
@@ -573,15 +573,17 @@ function renderInventory(){
 }
 
 function histRow(h){
+  const part = parts.find(p => p.id === h.partId);
+  const photo = part ? part.photo : null;
   return `
     <div class="hist-row">
-      <div class="hist-icon"><i class="ti ti-transfer-out" aria-hidden="true"></i></div>
+      ${photo ? `<img class="thumb zoomable" src="${photo}">` : `<div class="hist-icon"><i class="ti ti-transfer-out" aria-hidden="true"></i></div>`}
       <div class="grow">
         <div class="truncate" style="font-size:13px;"><b>${esc(h.partName)}</b> <span style="color:var(--muted);">· เครื่อง ${esc(h.machine||"-")}</span></div>
         <div style="color:var(--mutedFaint);font-size:11px;">${h.by ? "โดย "+esc(h.by)+" · " : ""}${fmtDate(h.timestamp)}</div>
       </div>
       <div class="mono" style="color:var(--danger);font-size:14px;">-${h.qtyWithdrawn}</div>
-      ${currentRole === "admin" ? `<button data-del-hist="${h.id}" title="ลบประวัตินี้" style="background:none;border:none;color:var(--mutedFaint);cursor:pointer;padding:4px;flex-shrink:0;">🗑</button>` : ""}
+      ${currentRole === "admin" ? `<button data-del-hist="${h.id}" title="ลบประวัตินี้" style="background:none;border:none;color:var(--mutedFaint);cursor:pointer;padding:4px;flex-shrink:0;"><i class="ti ti-trash" aria-hidden="true"></i></button>` : ""}
     </div>
   `;
 }
@@ -860,7 +862,8 @@ function bindEvents(){
   document.getElementById("closePart")?.addEventListener("click", () => { addOpen=false; editPart=null; showNewMachineInput=false; render(); });
   document.getElementById("fMachineSelect")?.addEventListener("change", (e) => {
     showNewMachineInput = e.target.value === "__new__";
-    render();
+    const wrap = document.getElementById("machineNewWrap");
+    if (wrap) wrap.style.display = showNewMachineInput ? "flex" : "none";
     if (showNewMachineInput) document.getElementById("fMachineNew")?.focus();
   });
   document.getElementById("photoInput")?.addEventListener("change", async (e) => {
