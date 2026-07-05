@@ -540,13 +540,13 @@ function renderInventory(){
     const matchesZone = !zoneFilter || p.zone === zoneFilter;
     return matchesSearch && matchesZone;
   });
-  const zoneFilterHtml = allZones.length > 0 ? `
+  const zoneFilterHtml = `
     <div style="margin-bottom:12px;">
       <select id="zoneFilterSelect">
         <option value="">ทุกโซน</option>
         ${allZones.map(z => `<option value="${esc(z)}" ${zoneFilter===z?"selected":""}>${esc(z)}</option>`).join("")}
       </select>
-    </div>` : "";
+    </div>`;
   if (filtered.length === 0) {
     return `
       <div class="search">
