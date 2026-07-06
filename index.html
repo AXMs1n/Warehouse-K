@@ -788,13 +788,13 @@ function renderPartForm(){
           </div>
           <div class="field-wrap">
             <label class="field">โซนที่ใช้ได้ (เลือกได้หลายโซน)</label>
-            <label style="display:flex;align-items:center;gap:8px;margin-bottom:10px;font-size:13px;color:var(--text);cursor:pointer;">
-              <input type="checkbox" id="fZoneAll" ${getPartZones(p).includes("__all__")?"checked":""}> ใช้ได้ทุกโซน
+            <label style="display:flex;align-items:center;gap:10px;margin-bottom:10px;font-size:13px;color:var(--text);cursor:pointer;">
+              <input type="checkbox" id="fZoneAll" style="width:18px;height:18px;flex-shrink:0;accent-color:var(--accent);margin:0;" ${getPartZones(p).includes("__all__")?"checked":""}> ใช้ได้ทุกโซน
             </label>
-            <div id="zoneCheckList" style="display:flex;flex-wrap:wrap;gap:8px;${getPartZones(p).includes("__all__")?"opacity:.4;pointer-events:none;":""}">
+            <div id="zoneCheckList" style="display:flex;flex-direction:column;gap:8px;${getPartZones(p).includes("__all__")?"opacity:.4;pointer-events:none;":""}">
               ${[...new Set(["ฝั่งสุก","ฝั่งดิบ","ซ่อมสร้าง","เครื่องเย็น", ...parts.flatMap(pp=>getPartZones(pp)).filter(z=>z && z!=="__all__")])].map(z => `
-                <label style="display:flex;align-items:center;gap:5px;background:var(--panelAlt);border:1px solid var(--border);border-radius:8px;padding:6px 10px;font-size:12.5px;cursor:pointer;">
-                  <input type="checkbox" class="zoneCheckbox" value="${esc(z)}" ${getPartZones(p).includes(z)?"checked":""}> ${esc(z)}
+                <label style="display:flex;align-items:center;gap:10px;background:var(--panelAlt);border:1px solid var(--border);border-radius:8px;padding:10px 12px;font-size:13px;cursor:pointer;width:100%;box-sizing:border-box;">
+                  <input type="checkbox" class="zoneCheckbox" style="width:18px;height:18px;flex-shrink:0;accent-color:var(--accent);margin:0;" value="${esc(z)}" ${getPartZones(p).includes(z)?"checked":""}> <span style="flex:1;">${esc(z)}</span>
                 </label>`).join("")}
             </div>
             <div style="display:flex;gap:6px;margin-top:10px;">
@@ -998,8 +998,8 @@ function bindEvents(){
     const exists = [...document.querySelectorAll(".zoneCheckbox")].some(cb => cb.value === val);
     if (!exists && list) {
       const label = document.createElement("label");
-      label.style.cssText = "display:flex;align-items:center;gap:5px;background:var(--panelAlt);border:1px solid var(--border);border-radius:8px;padding:6px 10px;font-size:12.5px;cursor:pointer;";
-      label.innerHTML = `<input type="checkbox" class="zoneCheckbox" value="${val.replace(/"/g,"&quot;")}" checked> ${val.replace(/</g,"&lt;")}`;
+      label.style.cssText = "display:flex;align-items:center;gap:10px;background:var(--panelAlt);border:1px solid var(--border);border-radius:8px;padding:10px 12px;font-size:13px;cursor:pointer;width:100%;box-sizing:border-box;";
+      label.innerHTML = `<input type="checkbox" class="zoneCheckbox" style="width:18px;height:18px;flex-shrink:0;accent-color:var(--accent);margin:0;" value="${val.replace(/"/g,"&quot;")}" checked> <span style="flex:1;">${val.replace(/</g,"&lt;")}</span>`;
       list.appendChild(label);
     } else {
       const cb = [...document.querySelectorAll(".zoneCheckbox")].find(c => c.value === val);
