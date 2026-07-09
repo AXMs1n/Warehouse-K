@@ -555,7 +555,7 @@ function renderDashboard(low, todayCount){
 }
 
 function partCardHtml(p){
-  const denom = Math.max(p.min * 2, p.qty, 1);
+  const denom = (p.max && p.max > 0) ? Math.max(p.max, p.qty, 1) : Math.max(p.min * 2, p.qty, 1);
   const pct = Math.max(4, Math.min(100, (p.qty / denom) * 100));
   const color = gaugeColor(p.qty, p.min);
   return `
@@ -810,6 +810,10 @@ function renderPartForm(){
             <div class="field-wrap"><label class="field">จำนวนคงเหลือ</label><input type="number" id="fQty" value="${p?.qty ?? 0}"></div>
             <div class="field-wrap"><label class="field">จำนวนขั้นต่ำ (min)</label><input type="number" id="fMin" value="${p?.min ?? 1}"></div>
           </div>
+          <div class="field-wrap">
+            <label class="field">จำนวนสูงสุดที่เก็บปกติ (max, ถ้ามี)</label>
+            <input type="number" id="fMax" value="${p?.max ?? ""}" placeholder="เว้นว่างได้ ถ้าไม่ระบุ ระบบจะใช้ min×2 แทน">
+          </div>
           <div id="formErr" class="err-text" style="display:none;"></div>
           <div style="display:flex;gap:8px;">
             <button class="btn btn-accent" style="flex:1;justify-content:center;" id="btnSavePart" ${saving?"disabled":""}>${saving?"⏳ กำลังบันทึก...":"💾 บันทึก"}</button>
@@ -836,10 +840,10 @@ function renderWithdrawForm(){
             <div>
               <div style="font-size:13px;font-weight:600;">${esc(p.name)}</div>
               <div class="mono" style="color:var(--mutedFaint);font-size:11px;">คงเหลือ ${p.qty} ${esc(p.unit)}</div>
+              ${p.machine ? `<div style="color:var(--machine);font-size:11.5px;margin-top:2px;">${esc(p.machine)}</div>` : ""}
             </div>
           </div>
           <div class="field-wrap"><label class="field">จำนวนที่เบิก (${esc(p.unit)})</label><input type="number" id="wQty" value="1" min="1" max="${p.qty}"></div>
-          <div class="field-wrap"><label class="field">เครื่องที่นำไปใช้</label><input id="wMachine" placeholder="เช่น เครื่องอัดหมายเลข 3"></div>
           <div class="field-wrap"><label class="field">ผู้เบิก (ชื่อ/รหัสพนักงาน)</label><input id="wBy" value="${esc(currentName)}" placeholder="เช่น สมชาย / EMP-014"></div>
           <div class="field-wrap"><label class="field">หมายเหตุ (ถ้ามี)</label><input id="wNote"></div>
           <div id="wErr" class="err-text" style="display:none;"></div>
@@ -1030,6 +1034,8 @@ function bindEvents(){
     const unit = document.getElementById("fUnit").value.trim() || "ชิ้น";
     const qty = Number(document.getElementById("fQty").value);
     const min = Number(document.getElementById("fMin").value);
+    const maxRaw = document.getElementById("fMax").value.trim();
+    const max = maxRaw === "" ? null : Number(maxRaw);
     const errEl = document.getElementById("formErr");
     if (!name || !code) { errEl.textContent = "กรุณากรอกชื่อและรหัสอะไหล่"; errEl.style.display="block"; return; }
     const machineSelectVal = document.getElementById("fMachineSelect")?.value || "";
@@ -1044,7 +1050,7 @@ function bindEvents(){
     let photo = editPart?.photo || null;
     if (pendingPhotoBlob) photo = pendingPhotoBlob; // base64 dataURL string
     showNewMachineInput = false;
-    await savePart({ id: editPart?.id, name, zones, code, unit, qty, min, machine, photo });
+    await savePart({ id: editPart?.id, name, zones, code, unit, qty, min, max, machine, photo });
   });
   document.getElementById("btnDeletePart")?.addEventListener("click", () => {
     if (confirm("ยืนยันลบอะไหล่นี้?")) deletePart(editPart.id);
@@ -1054,13 +1060,12 @@ function bindEvents(){
   document.getElementById("closeWithdraw")?.addEventListener("click", () => { withdrawPart=null; render(); });
   document.getElementById("btnConfirmWithdraw")?.addEventListener("click", () => {
     const qty = Number(document.getElementById("wQty").value);
-    const machine = document.getElementById("wMachine").value.trim();
+    const machine = withdrawPart.machine || "";
     const by = document.getElementById("wBy").value.trim();
     const note = document.getElementById("wNote").value.trim();
     const errEl = document.getElementById("wErr");
     if (!qty || qty <= 0) { errEl.textContent="ระบุจำนวนให้ถูกต้อง"; errEl.style.display="block"; return; }
     if (qty > withdrawPart.qty) { errEl.textContent=`คลังเหลือแค่ ${withdrawPart.qty} ${withdrawPart.unit}`; errEl.style.display="block"; return; }
-    if (!machine) { errEl.textContent="ระบุเครื่องที่นำไปใช้"; errEl.style.display="block"; return; }
     errEl.style.display="none";
     withdraw(withdrawPart, qty, machine, by, note);
   });
