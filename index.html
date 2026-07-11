@@ -473,8 +473,10 @@ function renderLogin(){
     <i class="ti ti-box" style="position:absolute;top:64%;left:5%;color:#2DD4BF;opacity:.1;font-size:20px;pointer-events:none;" aria-hidden="true"></i>
     <div class="wrap" style="max-width:380px;padding-top:80px;position:relative;">
       <div style="text-align:center;margin-bottom:28px;">
-        <span class="icon" style="font-size:26px;display:inline-flex;padding:14px;"><i class="ti ti-box" aria-hidden="true"></i></span>
-        <div class="head" style="font-size:19px;font-weight:600;margin-top:10px;">SpareCube</div>
+        <img src="icon-192.png" alt="SpareCube" style="width:96px;height:96px;border-radius:22px;box-shadow:0 0 24px #2DD4BF44;">
+        <div class="head" style="font-size:32px;font-weight:700;margin-top:14px;letter-spacing:-0.5px;">
+          <span style="color:#ECEDEF;">Spare</span><span style="background:linear-gradient(90deg,#2DD4BF,#6EE7D8);-webkit-background-clip:text;background-clip:text;color:transparent;">Cube</span>
+        </div>
         <div style="color:var(--muted);font-size:12.5px;margin-top:4px;">เข้าสู่ระบบเพื่อใช้งาน</div>
       </div>
       <div class="field-wrap"><label class="field">ชื่อของคุณ</label><input id="loginName" placeholder="เช่น สมชาย" value="${esc(currentName)}"></div>
