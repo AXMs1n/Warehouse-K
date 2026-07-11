@@ -437,7 +437,7 @@ function render(){
           <div style="display:flex;align-items:center;gap:10px;">
             <div style="text-align:right;line-height:1.3;">
               <div style="font-size:12px;font-weight:600;">${esc(currentName)}</div>
-              <div style="font-size:10px;color:${isAdmin?'var(--warn)':'var(--muted)'};">${isAdmin?"Admin":"Technician"}</div>
+              <div style="font-size:10px;color:${isAdmin?'var(--warn)':'var(--muted)'};">${isAdmin?"Admin":"User"}</div>
             </div>
             <button class="btn btn-ghost" id="btnLogout" title="ออกจากระบบ / สลับผู้ใช้" style="padding:8px;"><i class="ti ti-logout" aria-hidden="true"></i></button>
             ${isAdmin ? `<button class="btn btn-accent" id="btnAdd">+ เพิ่มอะไหล่</button>` : ""}
@@ -485,7 +485,7 @@ function renderLogin(){
       <div class="field-wrap">
         <label class="field">สิทธิ์การใช้งาน</label>
         <div class="grid2">
-          <button class="btn btn-ghost" id="roleUser" style="justify-content:center;padding:12px 0;"><i class="ti ti-tool" aria-hidden="true"></i> Technician</button>
+          <button class="btn btn-ghost" id="roleUser" style="justify-content:center;padding:12px 0;"><i class="ti ti-users" aria-hidden="true"></i> User</button>
           <button class="btn btn-ghost" id="roleAdmin" style="justify-content:center;padding:12px 0;"><i class="ti ti-shield-lock" aria-hidden="true"></i> Admin</button>
         </div>
       </div>
@@ -496,7 +496,7 @@ function renderLogin(){
       ${loginErr ? `<div class="err-text">${esc(loginErr)}</div>` : ""}
       <button class="btn btn-accent" id="btnLogin" style="width:100%;justify-content:center;margin-top:4px;">เข้าใช้งาน</button>
       <div style="color:var(--mutedFaint);font-size:11px;text-align:center;margin-top:16px;line-height:1.6;">
-        Technician เลือกได้เลยไม่ต้องใส่รหัส · Admin ต้องใส่รหัสผ่าน
+        User เลือกได้เลยไม่ต้องใส่รหัส · Admin ต้องใส่รหัสผ่าน
       </div>
     </div>
     </div>
